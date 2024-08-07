@@ -8,7 +8,6 @@ SEARCH_URL = "https://llm-search-agent-api.onrender.com/search"
 USER='User'
 BOT='Assistant'
 
-
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
 
@@ -27,6 +26,14 @@ def call_search_api(user_input):
     return response
 
 st.set_page_config(page_title="Chatbot")
+
+def stream(response, response_text):
+    for chunk in response.iter_content(chunk_size=1024):
+        if chunk:
+            data=chunk.decode('utf-8')
+            response_text += data
+            yield data
+    st.session_state.chat_history.append({"role": "bot", "content": response_text})
 
 
 st.sidebar.title("Select API")
@@ -48,16 +55,12 @@ if user_input:
     else:
         response = call_search_api(user_input)
     
-    response_text = ""
-    for chunk in response.iter_content(chunk_size=1024):
-        if chunk:
-            response_text += chunk.decode('utf-8')
-    st.session_state.chat_history.append({"role": "bot", "content": response_text})
-    
-    
     for message in st.session_state.chat_history:
         if message["role"] == "user":
             st.chat_message(USER).write(message['content'])
         else:
             st.chat_message(BOT).write(message['content'])
-
+    
+    response_text = ""
+    st.chat_message(BOT).write(stream(response, response_text))
+    
