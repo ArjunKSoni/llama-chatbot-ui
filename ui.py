@@ -1,9 +1,9 @@
 import streamlit as st
 import requests
 
-CHAT_URL = "http://127.0.0.1:4000/chat"
-ASK_URL = "http://127.0.0.1:4000/ask"
-SEARCH_URL = "http://127.0.0.1:8000/search"
+CHAT_URL = "https://llamachat-ipea.onrender.com/chat"
+ASK_URL = "https://llamachat-ipea.onrender.com/ask"
+SEARCH_URL = "https://llm-search-agent-api.onrender.com/search"
 
 USER='User'
 BOT='Assistant'
